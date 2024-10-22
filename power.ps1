@@ -3,19 +3,38 @@ $urlPlano = "https://drive.ux.net.br/api/public/dl/djrCYkyh/omega/power_js.pow"
 # Caminho onde o arquivo será salvo localmente
 $caminhoPlano = "C:\power_js.pow"
 
+# Nome desejado para o novo plano de energia
+$planoNome = "Power JS"
+
 # Baixar o arquivo de plano de energia
 Invoke-WebRequest -Uri $urlPlano -OutFile $caminhoPlano
 
-# Verifica se o arquivo do plano de energia foi baixado
+# Verifica se o arquivo de plano de energia foi baixado com sucesso
 if (Test-Path $caminhoPlano) {
-    # Importa o plano de energia
-    powercfg -import $caminhoPlano
+    # Importar o plano de energia e capturar o GUID do plano importado
+    Try {
+        $output = powercfg -import $caminhoPlano
+        Write-Host "Plano de energia importado com sucesso!"
 
-    # Define o plano de energia importado como o plano ativo
-    $novoPlanoGUID = (powercfg -list | Select-String -Pattern "8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c").Line.Split()[3]
-    powercfg -setactive $novoPlanoGUID
+        # Capturar o GUID do plano importado a partir do resultado
+        $novoPlanoGUID = $output -match 'GUID: ([\w-]+)' | Out-Null
+        $novoPlanoGUID = $Matches[1]
 
-    Write-Host "Plano de energia aplicado com sucesso!"
-} else {
-    Write-Host "Falha ao baixar o arquivo do plano de energia!"
+        # Verificar se o GUID foi extraído corretamente
+        If ($novoPlanoGUID) {
+            # Renomear o plano de energia para "Power JS"
+            powercfg -changename $novoPlanoGUID $planoNome
+            Write-Host "Plano de energia renomeado para: $planoNome"
+
+            # Aplicar o novo plano de energia
+            powercfg -setactive $novoPlanoGUID
+            Write-Host "Plano de energia aplicado com sucesso! GUID: $novoPlanoGUID"
+        } Else {
+            Write-Host "Erro ao extrair o GUID do plano de energia." -ForegroundColor Red
+        }
+    } Catch {
+        Write-Host "Erro ao importar o plano de energia: $_" -ForegroundColor Red
+    }
+} Else {
+    Write-Host "Falha ao baixar o arquivo do plano de energia!" -ForegroundColor Red
 }
