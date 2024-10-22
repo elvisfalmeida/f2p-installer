@@ -29,22 +29,6 @@ if (Test-Path $caminhoPlano) {
             # Aplicar o novo plano de energia
             powercfg -setactive $novoPlanoGUID
             Write-Host "Plano de energia aplicado com sucesso! GUID: $novoPlanoGUID"
-
-            # Definir todas as ações dos botões de energia como "Nada a fazer"
-            # Botão de energia
-            powercfg -setacvalueindex $novoPlanoGUID SUB_BUTTONS PBUTTONACTION 0
-            powercfg -setdcvalueindex $novoPlanoGUID SUB_BUTTONS PBUTTONACTION 0
-            Write-Host "Botão de energia configurado para 'Nada a fazer'."
-
-            # Botão de suspensão
-            powercfg -setacvalueindex $novoPlanoGUID SUB_BUTTONS SLEEPBUTTONACTION 0
-            powercfg -setdcvalueindex $novoPlanoGUID SUB_BUTTONS SLEEPBUTTONACTION 0
-            Write-Host "Botão de suspensão configurado para 'Nada a fazer'."
-
-            # Fechar a tampa (se aplicável em laptops)
-            powercfg -setacvalueindex $novoPlanoGUID SUB_BUTTONS LIDACTION 0
-            powercfg -setdcvalueindex $novoPlanoGUID SUB_BUTTONS LIDACTION 0
-            Write-Host "Ação de fechar a tampa configurada para 'Nada a fazer'."
         } Else {
             Write-Host "Erro ao extrair o GUID do plano de energia." -ForegroundColor Red
         }
