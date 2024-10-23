@@ -5,7 +5,7 @@ $chromeDriverJsonUrl = "https://googlechromelabs.github.io/chrome-for-testing/la
 $logFilePath = "$env:TEMP\chromedriver_update_log.txt"
 
 # Configura a politica de execucao
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force
+Set-ExecutionPolicy -Scope CurrentUser
 
 # Limpa ou cria o arquivo de log
 Clear-Content $logFilePath -ErrorAction SilentlyContinue
